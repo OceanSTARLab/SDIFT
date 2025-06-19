@@ -42,7 +42,7 @@ MPDPS **leverages the temporal continuity inherent in physical dynamics and prop
 ## Quick Snapshot of Reconstruction Results on Acttive Matter dataset: 
 
 ### Ground Truth:
-<div style="text-align: center;">
+<div align=center>
   <img src="img/gt.gif" , style="max-width: 25%;">
 </div>
 
@@ -74,11 +74,11 @@ MPDPS **leverages the temporal continuity inherent in physical dynamics and prop
 </tr>
 </table>
 Animations A and B show SDIFT with MPDPS and DPS reconstructions, respectively, using clean observations.
-Animations C and D show the same reconstructions under severely noisy observations.
+Animations C and D present the same reconstructions under severe noise conditions.
 
 - All cases demonstrate the ability to reconstruct the approximate structure of the physical field from highly sparse observations, thanks to the FTM encoder, which significantly reduces the number of unknown variables (i.e., the elements of the core tensor).
 - One can see that our proposed MPDPS significantly improves both qualitative and quantitative reconstruction results—the evolution of the physical field is much smoother—and demonstrates strong robustness against noise.
----
+
 
 ### Sampling Pattern for Observation Setting 2  (1% Observation Rate across Interlaced Timesteps):
 <div align=center> <img src="img/ob2.png" width = 100%/> </div>
