@@ -77,7 +77,7 @@ Animations A and B show SDIFT with MPDPS and DPS reconstructions, respectively, 
 Animations C and D present the same reconstructions under severe noise conditions.
 
 - All cases demonstrate the ability to reconstruct the approximate structure of the physical field from highly sparse observations, thanks to the FTM encoder, which significantly reduces the number of unknown variables (i.e., the elements of the core tensor).
-- One can see that our proposed MPDPS significantly improves both qualitative and quantitative reconstruction results—the evolution of the physical field is much smoother—and demonstrates strong robustness against noise.
+- One can see that our proposed MPDPS ***significantly improves both qualitative and quantitative reconstruction results—the evolution of the physical field is much smoother—and demonstrates strong robustness against noise.***
 
 
 ### Sampling Pattern for Observation Setting 2  (1% Observation Rate across Interlaced Timesteps):
@@ -87,7 +87,25 @@ Animations C and D present the same reconstructions under severe noise condition
 
 #### Reconstruction Results on Observation Setting 2
 
----
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="img/g5.gif", width="160"/><br>
+      A:SDIFT + MPDPS (clean observation)
+    </td>
+    <td align="center">
+      <img src="img/g6.gif", width="160"/><br>
+      B:SDIFT + DPS (clean observation)
+    </td>
+  </tr>
+</table>
+
+It is obvious that, unlike DPS which generates non-smooth animations, MPDPS consistently produces accurate and smooth reconstructions, even at timesteps lacking direct observations, demostrating the effectivenness of our proposed method.
+
+
+------------------
+
 <!-- Example of latent functions of spatial and temporal modes learned from real-world data.
 <div align=center> <img src="./figs/FunBat.PNG" width = 100%/> </div>
 <div align=center> <img src="./figs/FunBat-time.PNG" width = 50%/> </div> -->
