@@ -101,7 +101,7 @@ Animations C and D present the same reconstructions under severe noise condition
   </tr>
 </table>
 
-It is obvious that, unlike DPS which generates non-smooth animations, MPDPS consistently produces accurate and smooth reconstructions, even at timesteps lacking direct observations, demostrating the effectivenness of our proposed method.
+It is obvious that, unlike DPS which generates non-smooth animations, ***MPDPS consistently produces accurate and smooth reconstructions, even at timesteps lacking direct observations***, demostrating the effectivenness of our proposed method.
 
 
 ------------------
