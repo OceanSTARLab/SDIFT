@@ -1,0 +1,7 @@
+h5py==3.13.0
+matplotlib==3.10.3
+numpy==2.3.0
+pandas==2.3.0
+scipy==1.15.3
+torch==2.5.1+cu121
+tqdm==4.67.1
