@@ -17,17 +17,77 @@ Generating ***Continous Spatiotemporal Multidimensional Physical Data*** with Fu
 <div align=center> <img src="img/flow.png" width = 100%/> </div>
 
 ### Functional Tucker Model (FTM)
-<div align=float> <img src="img/FTM.png" width = 20%/> </div>
+<div align=center> <img src="img/FTM.png" width = 30%/> </div>
+FTM is a general framework that naturally captures the inherent multi-dimensional structure 
+of physical fields and provides compact representations well-suited for sparse or irregular 
+scenarios. 
 
-FTM is a general framework that naturally captures the inherent multi-dimensional structure of physical fields and provides compact representations well-suited for sparse or irregular scenarios.
+
+
+
 ### Gaussion Process-based Sequential Diffusion  (GPSD)
+<div align=center> <img src="img/TUNET.png" width = 35%/> </div>
+
+GPSD is a variant of diffusion models that uses a Gaussian Process (GP) as the noise source to better capture temporal continuity. Specifically, we design a new architecture called the **Temporally-Augmented U-Net** to serve as the denoiser. 
+
 
 ### Message-Passing Diffusion Posterior Sampling (MPDPS)
+<div align=center> <img src="img/MPDPS.png" width = 100%/> </div>
+
+MPDPS **leverages the temporal continuity inherent in physical dynamics and propagates observation-derived guidance across the entire core sequence** using Gaussian Process Regression (GPR). For cores at timesteps with direct observations, this guidance is further refined through messages from neighboring observed timesteps. This smoothing mechanism enhances the robustness of the generated sequence, especially under noisy or extremely sparse observations.
+
+
 ---
 
+## Quick Snapshot of Reconstruction Results on Acttive Matter dataset: 
+
+### Ground Truth:
+<div style="text-align: center;">
+  <img src="img/gt.gif" , style="max-width: 25%;">
+</div>
+
+
+### Sampling Pattern for Observation Setting 1 (Consistently 1% Observation Rate across All Timesteps):
+<div align=center> <img src="img/ob.png" width = 100%/> </div>
 
 
 
+#### Reconstruction Results on Observation Setting 1
+<table>
+<tr>
+  <td align="center">
+    <img src="img/g1.gif" width="160"/><br>
+    <sub>A:SDIFT + MPDPS (clean observation)</sub>
+  </td>
+  <td align="center">
+    <img src="img/g2.gif" width="160"/><br>
+    <sub>B:SDIFT + DPS (clean observation)</sub>
+  </td>
+  <td align="center">
+    <img src="img/g3.gif" width="160"/><br>
+    <sub>C:SDIFT + MPDPS (noisy observation)</sub>
+  </td>
+  <td align="center">
+    <img src="img/g4.gif" width="160"/><br>
+    <sub>D:SDIFT + DPS (noisy observation)</sub>
+  </td>
+</tr>
+</table>
+Animations A and B show SDIFT with MPDPS and DPS reconstructions, respectively, using clean observations.
+Animations C and D show the same reconstructions under severely noisy observations.
+
+- All cases demonstrate the ability to reconstruct the approximate structure of the physical field from highly sparse observations, thanks to the FTM encoder, which significantly reduces the number of unknown variables (i.e., the elements of the core tensor).
+- One can see that our proposed MPDPS significantly improves both qualitative and quantitative reconstruction results—the evolution of the physical field is much smoother—and demonstrates strong robustness against noise.
+---
+
+### Sampling Pattern for Observation Setting 2  (1% Observation Rate across Interlaced Timesteps):
+<div align=center> <img src="img/ob2.png" width = 100%/> </div>
+
+
+
+#### Reconstruction Results on Observation Setting 2
+
+---
 <!-- Example of latent functions of spatial and temporal modes learned from real-world data.
 <div align=center> <img src="./figs/FunBat.PNG" width = 100%/> </div>
 <div align=center> <img src="./figs/FunBat-time.PNG" width = 50%/> </div> -->
@@ -76,6 +136,14 @@ If you wanna customize your own data to play the model, please follow the notebo
 ## Citing SDIFT
 > 🌟 If you find this resource helpful, please consider to star this repository and cite our research:
 ```tex
-
+@misc{chen2025SDIFT,
+      title={Generating Full-field Evolution of Physical Dynamics from Irregular Sparse Observations}, 
+      author={Panqi Chen and Yifan Sun and Lei Cheng and Yang Yang and Weichang Li and Yang Liu and Weiqing Liu and Jiang Bian and Shikai Fang},
+      year={2025},
+      eprint={2505.09284},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2505.09284}, 
+}
 ```
 In case of any questions, bugs, suggestions or improvements, please feel free to open an issue.
