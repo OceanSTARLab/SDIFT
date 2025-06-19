@@ -140,9 +140,6 @@ if __name__ == "__main__":
     parser.add_argument("--R", type=int, default=(1,48,48), help="size of Tucker core") 
     parser.add_argument("--learning_rate", type=float, default=2e-4)
     parser.add_argument("--max_iter", type=int, default=1000)
-
-
-
     config = parser.parse_args()
 
     ##########################data preprocessing#############################

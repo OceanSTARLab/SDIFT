@@ -16,6 +16,13 @@ Generating ***Continous Spatiotemporal Multidimensional Physical Data*** with Fu
 
 <div align=center> <img src="img/flow.png" width = 100%/> </div>
 
+### Functional Tucker Model (FTM)
+<div align=float> <img src="img/FTM.png" width = 20%/> </div>
+
+FTM is a general framework that naturally captures the inherent multi-dimensional structure of physical fields and provides compact representations well-suited for sparse or irregular scenarios.
+### Gaussion Process-based Sequential Diffusion  (GPSD)
+
+### Message-Passing Diffusion Posterior Sampling (MPDPS)
 ---
 
 

@@ -2,7 +2,6 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-import pandas as pd
 import os
 import h5py
 
@@ -14,37 +13,10 @@ def set_random_seed(seed):
 
 
 
-def make_data_dict(data_path, fold=0, args=None):
-    """to be polish"""
-    full_data = np.load(data_path, allow_pickle=True).item()
-
-    # here should add one more data-loader class?
-
-    data_dict = full_data["data"][fold]
-    data_dict["CONTI_2_DISCT_dicts"] = full_data["CONTI_2_DISCT_dicts"]
-    data_dict["DISCT_2_CONTI_dicts"] = full_data["DISCT_2_CONTI_dicts"]
-
-    data_dict["ndims"] = full_data["ndims"]
-
-    return data_dict
 
 
 
 
-
-def Write_excel(list0,list1, list2, output_path):
-    data = {
-        "Epoch":list0,
-        'RMSE': list1,
-        'MAE': list2
-    }
-
-    # 创建一个 DataFrame
-    df = pd.DataFrame(data)
-
-    # 将 DataFrame 写入 Excel 文件
-
-    df.to_excel(output_path, index=True)
 def get_ind_time(data_dict, key1, key2):
     x1 = data_dict[key1]
     ind1 = x1[:, :2]
@@ -59,10 +31,6 @@ def get_ind_time(data_dict, key1, key2):
 def normalize_data(tr_y, te_y):
     data_mean = tr_y.mean()
     data_std = tr_y.std()
-
-    # data_mean = tr_y.min()
-    # data_std = tr_y.max() - tr_y.min()
-
     tr = (tr_y - data_mean) / data_std
     te = (te_y - data_mean) / data_std
 
@@ -79,10 +47,7 @@ def normalize_data2(d):
 
 def get_sample_data(tr_time_ind):
     values = np.array([4*x for x in range(67)])
-    # 使用torch.isin找到在列表内的值
     mask = np.isin(tr_time_ind, values)
-
-    # 使用torch.where返回索引
     indices = np.where(mask)
     return indices[0]
 
@@ -192,26 +157,11 @@ def plot_training_data(tr_ind, tr_dep_ind, tr_time_ind, tr_y):
 
 ###################################################################
 def tv_regularization(tensor, weight=1.0, flag = True):
-    """
-    计算张量的总变差（TV正则化）
-    
-    参数:
-    tensor: 要进行TV正则化的张量，形状为 (258, 5, 100)
-    weight: 正则化的权重参数，控制平滑的强度
-    
-    返回:
-    总变差正则化值
-    """
-    # 计算相邻元素的差异
     diff = tensor[:-1] - tensor[1:]
-    
-    # 计算Frobenius范数
     if flag:
         tv_loss = torch.sum(torch.norm(diff, p='fro', dim=(1, 2)))
     else:
         tv_loss = torch.sum(torch.norm(diff, p='fro', dim=(1)))
-    
-    # 加上权重，控制正则化强度
     return weight * tv_loss
 
 
@@ -260,48 +210,6 @@ def matern_kernel(r, sigma_f=1.0, l=1.0, nu=1.5):
 
 
 
-def get_ktT(y_tt, core_t, gp_gamma=1e3, gp_sigma=2):
-    r = torch.sqrt(torch.square(y_tt - core_t)) #  time differences, shape [B, S]
-
-    return gp_sigma*torch.exp(-torch.square(r)*gp_gamma) # [B, S]
-    #return matern_kernel(r, sigma_f=1.0, l=1.0, nu=2.5)
-
-
-def get_kTT_inv(t, gp_gamma=1e3, gp_sigma=2):
-    r = torch.sqrt(torch.square(t - t.transpose(-1, -2))) # Pairwise time differences, shape [B, S, S]
-    diag = torch.eye(t.shape[-2]).to(t) * 1e-4 # for numerical stability 100 * 100
-
-    K = gp_sigma*torch.exp(-torch.square(r)*gp_gamma) + diag
-    #L = torch.linalg.cholesky(K.squeeze(0))
-
-    #return (L.T@L).unsqueeze(0)
-    return torch.inverse(K)
-    #return torch.inverse(matern_kernel(r, sigma_f=1.0, l=1.0, nu=2.5) + diag)
-
-def add_noise(x, t, i, alphas):
-    """
-    x: Clean data sample, shape [B, S, D]
-    t: Times of observations, shape [B, S, 1]
-    i: Diffusion step, shape [B, S, 1]
-    """
-    noise_gaussian = torch.randn_like(x)#200*100*1
-    
-    cov = get_gp_covariance(t) # Covariance matrix 200*100*100
-    L = torch.linalg.cholesky(cov) # 200*100*100
-    noise = L @ noise_gaussian #200*100*1
-    
-    alpha = alphas[i.long()].to(x) #200*100*1  
-    x_noisy = torch.sqrt(alpha) * x + torch.sqrt(1 - alpha) * noise
-    
-    return x_noisy, noise
-
-
-
-def get_betas(steps):
-    beta_start, beta_end = 1e-4, 0.04
-    diffusion_ind = torch.linspace(0, 1, steps).to(device)
-    return beta_start * (1 - diffusion_ind) + beta_end * diffusion_ind
-
 
 
 def plot_generate_git(basis, core, core_mean, core_std, data_std, data_mean, u_ind_uni, v_ind_uni, file_name = r"generate_animation.gif"):
@@ -344,92 +252,6 @@ def compute_rmse(gt, basis, core, core_mean, core_std, data_std, data_mean, u_in
     output_batch = output_batch.reshape(output_batch.shape[0], u_ind_uni.shape[0], v_ind_uni.shape[0])
     data = output_batch * data_std + data_mean
     return np.sqrt(np.mean((gt - data)**2)), np.mean(np.abs((gt - data)))
-
-
-
-
-
-def extract_observations(data_path, data_mean, data_std):
-    #load partial observations  group 
-    tr_ind_conti, tr_ind, tr_dep_ind, tr_time_ind, tr_y,   u_ind_uni, v_ind_uni, dims = load_data_ssf(data_path)
-    
-    tr_ind_conti = tr_ind_conti[:,1:3]
-    
-    
-    
-    t_grid = torch.linspace(0, 1, 50)
-    
-    timestep = 50
-    y_group = []
-    ind_conti_group = []
-    y_tt_group = []
-    tr_y = (tr_y- data_mean)/data_std
-    be_ind = 600
-    for i in range(timestep):
-        if i % 1 ==0 :
-            y_temp = tr_y[tr_time_ind==(i+be_ind)]
-            y_group.append(y_temp+0.3*np.random.randn(*y_temp.shape))
-            ind_conti_group.append(tr_ind_conti[tr_time_ind==(i+be_ind)])
-            y_tt_group.append(t_grid[i])
-        # else:
-        #     y_group.append([])
-        #     ind_conti_group.append([])
-        #     y_tt_group.append([])
-
-    return y_group, ind_conti_group, y_tt_group, u_ind_uni, v_ind_uni
-
-
-
-def extract_observations2(data_path, data_mean, data_std):
-    #load partial observations  group 
-    tr_ind_conti, tr_ind, tr_dep_ind, tr_time_ind, tr_y,   u_ind_uni, v_ind_uni, dims = load_data_ssf(data_path)
-    tr_ind_conti = tr_ind_conti[:,1:3]
-
-    timestep = 20
-    y_group = []
-    ind_conti_group = []
-    tr_y = (tr_y- data_mean)/data_std
-    for i in range(timestep):
-        y_group.append(tr_y[tr_time_ind==(i+40)])
-        ind_conti_group.append(tr_ind_conti[tr_time_ind==(i+40)])
-
-    return y_group, ind_conti_group, u_ind_uni, v_ind_uni
-
-
-
-def extract_observations3(data_path, data_mean, data_std):
-    #load partial observations  group 
-    tr_ind_conti, tr_ind, tr_dep_ind, tr_time_ind, tr_y,   u_ind_uni, v_ind_uni, dims = load_data_ssf(data_path)
-    tr_ind_conti = tr_ind_conti[:,1:3]
-
-    timestep = 50
-    y_group = []
-    ind_conti_group = []
-    tr_y = (tr_y- data_mean)/data_std
-    for i in range(timestep):
-        y_group.append(tr_y[tr_time_ind==(i+180)])
-        ind_conti_group.append(tr_ind_conti[tr_time_ind==(i+180)])
-
-    return y_group, ind_conti_group, u_ind_uni, v_ind_uni
-
-
-
-
-def extract_observations4(data_path, data_mean, data_std):
-    #load partial observations  group 
-    tr_ind_conti, tr_ind, tr_dep_ind, tr_time_ind, tr_y,   u_ind_uni, v_ind_uni, dims = load_data_ssf(data_path)
-    tr_ind_conti = tr_ind_conti[:,1:3]
-
-    timestep = 20
-    y_group = []
-    ind_conti_group = []
-    tr_y = (tr_y- data_mean)/data_std
-    for i in range(timestep):
-        y_group.append(tr_y[tr_time_ind==(i+140)])
-        ind_conti_group.append(tr_ind_conti[tr_time_ind==(i+140)])
-
-    return y_group, ind_conti_group, u_ind_uni, v_ind_uni
-
 
 
 
