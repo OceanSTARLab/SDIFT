@@ -1,4 +1,4 @@
-#  [NeurIPS2025]:Generating Full-field Evolution of Physical Dynamics from Irregular Sparse Observations
+#  Generating Full-field Evolution of Physical Dynamics from Irregular Sparse Observations [NeurIPS2025]
 <div align=center> <img src="img/illu.png" width = 100%/> </div>
 (This repo is still on update)
  
@@ -6,7 +6,9 @@
 
 
 This is authors' official PyTorch implementation for paper:"**Generating Full-field Evolution of Physical Dynamics from Irregular Sparse Observations**"[[Openreview](https://openreview.net/forum?id=5d83SyLm0Z)][[Arxiv](https://arxiv.org/pdf/2505.09284)].
-***News: Our paper has been accepted by NeurIPS 2025!*** 🎉🎉
+
+
+***Our paper has been accepted by NeurIPS 2025!*** 🎉🎉
 
 
 
